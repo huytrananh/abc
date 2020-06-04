@@ -1,11 +1,15 @@
 import './App.css'
 import React, {useState, useEffect} from 'react'
+// import {Card, Button} from 'react-bootstrap'
+// import moment from 'react'
+
 const clientId = process.env.REACT_APP_CLIENT_ID
 
 
 
 function App() {
   const [token, setToken] = useState(null)
+  let [issueList, setIssueList] = useState([])
 
   const getToken = () => {
     const existingToken = localStorage.getItem('token')
@@ -34,11 +38,13 @@ function App() {
     let data = await fetch(url)
     let result = await data.json()
     console.log("Data result is: ", result)
+    setIssueList(result)
   }
+
 
   const postNewIssue = async() => {
     const issue = { title: " here is the issue", body: "Help me to fix it" };
-    const url = `https://api.github.com/repos/huytrananh/catch-monster/issues`;
+    const url = `https://api.github.com/repos/facebook/react/issues`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -61,6 +67,27 @@ function App() {
       {console.log("what is token: ", token)}
       <button onClick={()=>{getIssue()}}>Search</button>
       <button onClick={()=>{postNewIssue()}}>New Issue</button>
+      <div>
+        <ol>{issueList.map( item => {
+          return(
+            <>
+              <h3>{item.title}</h3>
+              <h5>{item.id} {item.created_at} by <a href="#">{item.user.login}</a></h5>
+            </>
+            
+          )
+        })}
+        </ol>
+      </div>
+      {/* <Card>
+          <Card.Body>
+          <Card.Title>Bug: Type Error</Card.Title>
+          <Card.Text>
+            #19072 opened hours ago by abcef
+          </Card.Text>
+          <Button variant="primary">Go somewhere</Button>
+        </Card.Body>
+      </Card> */}
     </div>
   )
 }
